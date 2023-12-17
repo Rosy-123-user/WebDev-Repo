@@ -90,7 +90,7 @@ const signup = async (req, res) => {
         // Save user data to the NeDB database
         const newUser = {
             username,
-            password: hashedPassword,
+            password: hashedPassword, // Save the hashed password
             email,
             phone,
             category,
@@ -107,11 +107,14 @@ const signup = async (req, res) => {
         } else {
             res.status(400).send('Invalid role specified during signup.');
         }
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
 
 
 const signupForm = (req, res) => {

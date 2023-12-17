@@ -1,20 +1,15 @@
+const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
-const express = require('express');
-const app = express();
 const path = require('path');
 const LocalStrategy = require('passport-local').Strategy;
 const nedb = require('nedb'); // Import NeDB
 const flash = require('connect-flash'); // Import connect-flash for flash messages
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const saltRounds = 10;
 
+const app = express();
 
-
-const aboutRoutes = require('./routes/aboutRoutes');
-const managerRoutes = require('./routes/managerRoutes');
-const alumniRoutes = require('./routes/alumniRoutes');
 
 // Set up view engine and views directory
 app.set('view engine', 'ejs');
@@ -38,10 +33,10 @@ const secretKey = generateRandomString(32);
 // Use express-session middleware
 app.use(
   session({
-    secret: secretKey, // not yet implemented
+    secret: secretKey,
     resave: true,
     saveUninitialized: true,
-  })
+    }),
 );
 
 app.use(flash()); // Initialize flash messages
@@ -73,9 +68,9 @@ passport.use('local', new LocalStrategy({
   passReqToCallback: true,
 }, async (req, username, password, done) => {
   try {
-    const username = req.body.username;
-    console.log('Username:', username);
-  
+    // Remove the duplicate definition of 'username' here
+      console.log('Username:', username);
+
     const user = await usersDB.findOne({ username: username });
     if (!user) {
       console.log('User not found');
@@ -84,25 +79,25 @@ passport.use('local', new LocalStrategy({
 
     console.log('Retrieved user from the database:', user);
 
-      // Ensure the user object has the correct password field
-      if (!user.password) {
-          console.log('Password field not found in the user object');
-          return done(null, false, req.flash('loginMessage', 'Password field not found in the user object.'));
-      }
+    // Ensure the user object has the correct password field
+    if (!user.password) {
+      console.log('Password field not found in the user object');
+      return done(null, false, req.flash('loginMessage', 'Password field not found in the user object.'));
+    }
 
-      const result = await bcrypt.compare(password, user.password);
-      console.log('Result of password comparison:', result);
-      
-      if (result) {
-          console.log('Password is correct');
-          return done(null, user);
-      } else {
-          console.log('Incorrect password');
-          return done(null, false, req.flash('loginMessage', 'Incorrect password.'));
-      }
+    const result = await bcrypt.compare(password, user.password);
+    console.log('Result of password comparison:', result);
+
+    if (result) {
+      console.log('Password is correct');
+      return done(null, user);
+    } else {
+      console.log('Incorrect password');
+      return done(null, false, req.flash('loginMessage', 'Incorrect password.'));
+    }
   } catch (err) {
-      console.error('Error in passport strategy:', err);
-      return done(err);
+    console.error('Error in passport strategy:', err);
+    return done(err);
   }
 }));
 
@@ -132,9 +127,14 @@ const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  console.log('User is not authenticated. Redirecting to /login');
+  console.log('User is not authenticated. Redirecting to about');
   res.redirect('/'); // Redirect to login if not authenticated
 };
+
+
+const aboutRoutes = require('./routes/aboutRoutes');
+const managerRoutes = require('./routes/managerRoutes');
+const alumniRoutes = require('./routes/alumniRoutes');
 
 app.use('/', aboutRoutes); // About Us page
 app.use('/managerDashboard', isAuthenticated, managerRoutes);
@@ -142,6 +142,7 @@ app.use('/alumniDashboard', isAuthenticated, alumniRoutes);
 
 // General route for authenticated dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {
+  console.log('Reached Dashboard route');
   // Determine the user role and render the corresponding dashboard
   const role = req.user.role;
   if (role === 'alumni') {
@@ -160,6 +161,12 @@ app.get('/logout', (req, res) => {
   req.logout();
   console.log('User logged out. Redirecting to /about');
   res.redirect('/'); // Redirect to About Us after logout
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
 });
 
 // Start the Express server

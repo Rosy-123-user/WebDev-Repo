@@ -19,9 +19,9 @@ router.get('/', aboutController.displayAboutPage);
 
 
 // Routes for user authentication
-router.get('/signup', aboutController.signupForm);
+// router.get('/signup', aboutController.signupForm);
 router.post('/signup', aboutController.signup);
-router.get('/login', aboutController.loginForm);
+// router.get('/login', aboutController.loginForm);
 router.post('/login', aboutController.loginMiddleware, (req, res, next) => {
     passport.authenticate('local', {
         failureRedirect: '/',
