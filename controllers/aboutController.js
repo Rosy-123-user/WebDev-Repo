@@ -13,6 +13,7 @@ let userDb;
 let eventsDb;
 
 // Function to create and load the database
+// Function to create and load the database
 function createAndLoadDatabase(databaseFile) {
     // Check if the database file exists
     if (fs.existsSync(databaseFile)) {
