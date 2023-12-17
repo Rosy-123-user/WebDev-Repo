@@ -1,0 +1,148 @@
+<!-- views/alumniDashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Dashboard | OurEvents</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="path/to/your/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OurEvents Logo">
+            OurEvents
+        </a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/about">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Sign Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Alumni Dashboard</h1>
+
+        <!-- Section 2: Event Categories (Cards) -->
+        <h2>Event Categories</h2>
+        <div class="row">
+            <!-- Category Cards -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Professional Development</h5>
+                        <button class="btn btn-primary view-events" data-category="Professional Development">View Events</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Networking</h5>
+                        <button class="btn btn-primary view-events" data-category="Networking">View Events</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Campus</h5>
+                        <button class="btn btn-primary view-events" data-category="Campus">View Events</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Event List Container -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div id="event-list"></div>
+            </div>
+        </div>
+
+        <!-- Section 4: Registered Events -->
+        <h2>Your Registered Events</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Unregister</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% events.forEach(event => { %>
+                    <tr>
+                        <td><%= event.title %></td>
+                        <td><%= event.date %></td>
+                        <td><%= event.category %></td>
+                        <td><%= event.location %></td>
+                        <td>
+                            <form method="POST" action="/unregister-event/<%= event._id %>">
+                                <button type="submit" class="btn btn-danger">Unregister</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Function to display events in the event list container
+        function displayEvents(events, category) {
+            let eventListHtml = '<h3>' + category + ' Events</h3>';
+            if (events.length > 0) {
+                eventListHtml += '<ul>';
+                events.forEach(function(event) {
+                    eventListHtml += '<li>';
+                    eventListHtml += '<strong>' + event.title + '</strong>';
+                    eventListHtml += '<p>' + event.description + '</p>';
+                    eventListHtml += '<p>' + event.date + '</p>';
+                    eventListHtml += '<button class="btn btn-primary register-event" data-event="' + event._id + '">Register</button>';
+                    eventListHtml += '</li>';
+                });
+                eventListHtml += '</ul>';
+            } else {
+                eventListHtml += '<p>No events in this category yet.</p>';
+            }
+            $('#event-list').html(eventListHtml);
+        }
+
+        // When a category button is clicked, fetch and display events of that category
+        $('.view-events').click(function() {
+            const category = $(this).data('category');
+
+            $.ajax({
+                type: 'GET',
+                url: `/events/category/${category}`,
+                success: function(events) {
+                    console.log('Events Data:', events);
+                    displayEvents(events, category);
+                },
+                error: function() {
+                    $('#event-list').html('<p>An error occurred while fetching events.</p>');
+                }
+            });
+
+         
+            
+        });
+    </script>
+</body>
+</html>
