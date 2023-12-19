@@ -137,8 +137,9 @@ const managerRoutes = require('./routes/managerRoutes');
 const alumniRoutes = require('./routes/alumniRoutes');
 
 app.use('/', aboutRoutes); // About Us page
-app.use('/managerDashboard', isAuthenticated, managerRoutes);
-app.use('/alumniDashboard', isAuthenticated, alumniRoutes);
+app.use('/managerDashboard', managerRoutes);
+app.use('/alumniDashboard', alumniRoutes);
+
 
 // General route for authenticated dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {

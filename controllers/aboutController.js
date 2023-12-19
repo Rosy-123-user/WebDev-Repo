@@ -196,7 +196,7 @@ const sendContactEmail = async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'your-email@gmail.com',
+            from: 'email@gmail.com',
             to: 'javarosze@gmail.com', // Update with the recipient email
             subject: 'Contact Form Submission',
             text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,

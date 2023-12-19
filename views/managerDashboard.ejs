@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard | OurEvents</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -50,7 +51,7 @@
                     </button>
 
                     <!-- Delete Event form -->
-                    <form method="POST" action="/delete-event/<%= event._id %>">
+                    <form method="POST" action="/deleteEvent/<%= event._id %>">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
 
@@ -71,7 +72,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Update Event Form -->
-                                    <form method="POST" action="/update-event/<%= event._id %>">
+                                    <form method="POST" action="/updateEvent/<%= event._id %>">
                                         <!-- Update Event Form Fields -->
                                         <!-- Title -->
                                         <div class="form-group">
