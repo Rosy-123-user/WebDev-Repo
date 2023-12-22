@@ -1,19 +1,20 @@
-const express = require('express');
-const router = express.Router();
-const alumniController = require('../controllers/aboutController');
+// const express = require('express');
+// const alumniRoutes = express.Router();
+// const alumniController = require('../controllers/aboutController');
 
 
 
-// Define a route for alumni dashboard
-router.get('/alumniDashboard', (req, res) => {
-    res.render('alumniDashboard'); 
-});
+// // Define a route for alumni dashboard
+// alumniRoutes.get('/alumniDashboard', (req, res) => {
+//     res.render('alumniDashboard'); 
+// });
 
-router.post('/registerEvent/:eventId', alumniController.registerEvent);
+// alumniRoutes.post('/registerEvent/:eventId', alumniController.registerEvent);
 
-router.get('/registeredEvents', alumniController.getRegisteredEvents);
+// alumniRoutes.get('/registeredEvents', alumniController.getRegisteredEvents);
 
-router.post('/unregisterEvent/:eventId', alumniController.unregisterEvent);
+// alumniRoutes.post('/unregisterEvent/:eventId', alumniController.unregisterEvent);
 
 
-module.exports = router;
+// module.exports = alumniRoutes;
+// // 

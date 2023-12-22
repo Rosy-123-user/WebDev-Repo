@@ -23,7 +23,7 @@
                 <a class="nav-link" href="#">Events</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/logout">Sign Out</a>
+                <a class="nav-link" href="/about">Sign Out</a>
             </li>
         </ul>
     </nav>
@@ -70,7 +70,7 @@
 
         <!-- Section 4: Registered Events -->
         <h2>Your Registered Events</h2>
-        <table class="table">
+        <table id="registeredEventsTable" class="table">
             <thead>
                 <tr>
                     <th scope="col">Event Name</th>
@@ -82,6 +82,7 @@
             </thead>
             <tbody>
                 <% events.forEach(event => { %>
+                    <% console.log("Events Data:", events); %>
                     <tr>
                         <td><%= event.title %></td>
                         <td><%= event.date %></td>
@@ -102,14 +103,15 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     <script>
         // Function to display events in the event list container
         function displayEvents(events, category) {
             let eventListHtml = '<h3>' + category + ' Events</h3>';
             if (events.length > 0) {
                 eventListHtml += '<ul>';
-                events.forEach(function(event) {
+                events.forEach(function (event) {
                     eventListHtml += '<li>';
                     eventListHtml += '<strong>' + event.title + '</strong>';
                     eventListHtml += '<p>' + event.description + '</p>';
@@ -123,26 +125,85 @@
             }
             $('#event-list').html(eventListHtml);
         }
-
+    
+        // Function to register for an event
+        function registerForEvent(eventId) {
+            $.ajax({
+                type: 'POST',
+                url: `/register-event/${eventId}`,
+                success: function (data) {
+                    console.log('Event registered:', data);
+    
+                    // Fetch updated registered events and update the table
+                    $.ajax({
+                        type: 'GET',
+                        url: '/registered-events',
+                        success: function (registeredEvents) {
+                            console.log('Updated Registered Events Data:', registeredEvents);
+                            updateRegisteredEventsTable(registeredEvents);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('AJAX Error:', textStatus, errorThrown);
+                        }
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                }
+            });
+        }
+    
+        // Function to update the registered events table
+        function updateRegisteredEventsTable(registeredEvents) {
+            let tableHtml = '';
+            if (registeredEvents.length > 0) {
+                registeredEvents.forEach(function (event) {
+                    tableHtml += '<tr>';
+                    tableHtml += '<td>' + event.title + '</td>';
+                    tableHtml += '<td>' + event.date + '</td>';
+                    tableHtml += '<td>' + event.category + '</td>';
+                    tableHtml += '<td>' + event.location + '</td>';
+                    tableHtml += '<td>';
+                    tableHtml += '<form method="POST" action="/unregister-event/' + event._id + '">';
+                    tableHtml += '<button type="submit" class="btn btn-danger">Unregister</button>';
+                    tableHtml += '</form>';
+                    tableHtml += '</td>';
+                    tableHtml += '</tr>';
+                });
+            } else {
+                tableHtml += '<tr><td colspan="5">No registered events yet.</td></tr>';
+            }
+            $('#registeredEventsTable tbody').html(tableHtml);
+        }
+    
         // When a category button is clicked, fetch and display events of that category
-        $('.view-events').click(function() {
+        $('.view-events').click(function () {
+            console.log('View Events button clicked');
             const category = $(this).data('category');
-
+            console.log('Category:', category);
+    
             $.ajax({
                 type: 'GET',
                 url: `/events/category/${category}`,
-                success: function(events) {
-                    console.log('Events Data:', events);
+                success: function (events) {
+                    console.log('Received Events Data:', events);
                     displayEvents(events, category);
+    
+                    // Bind the registerForEvent function to the Register button click
+                    $(document).on('click', '.register-event', function () {
+                        const eventId = $(this).data('event');
+                        registerForEvent(eventId);
+                    });
                 },
-                error: function() {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown);
                     $('#event-list').html('<p>An error occurred while fetching events.</p>');
                 }
             });
-
-         
-            
         });
+    
     </script>
+    
+    
 </body>
 </html>

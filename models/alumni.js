@@ -5,7 +5,7 @@ const path = require('path');
 
 // Initialize the NeDB database for alumni
 const alumniDB = new datastore({
-    filename: path.join(__dirname, '..','data','userAccount.db'), // Update the path to your userAccount.db
+    filename: path.join(__dirname, '..', 'data', 'events.db'), // Update the path to your events.db
     autoload: true,
 });
 
@@ -42,6 +42,18 @@ const Alumni = {
             callback(null, alumni.registeredEvents || []);
         });
     },
+    // Get all alumni users
+    getAllUsers: () => {
+        return new Promise((resolve, reject) => {
+             alumniDB.find({}, (err, users) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(users);
+                    }
+                });
+            });
+        },
 };
 
 module.exports = Alumni;

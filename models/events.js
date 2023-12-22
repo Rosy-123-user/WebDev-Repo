@@ -2,7 +2,7 @@ const datastore = require('nedb');
 const path = require('path');
 const fs = require('fs');
 
-const databaseFile = path.join(__dirname, '..','data','events.db');
+const databaseFile = path.join(__dirname, '..', 'data', 'events.db');
 
 let db;
 
@@ -14,7 +14,7 @@ if (fs.existsSync(databaseFile)) {
     });
 } else {
     // Database file doesn't exist; create a new Datastore instance
-    db = new Datastore({
+    db = new datastore({
         filename: databaseFile,
         autoload: true
     });
@@ -23,7 +23,7 @@ if (fs.existsSync(databaseFile)) {
     });
 }
 
-// Function to get all events from the database
+// Inside getAllEvents function 
 function getAllEvents(callback) {
     db.find({}, (err, events) => {
         if (err) {
@@ -32,6 +32,7 @@ function getAllEvents(callback) {
         return callback(null, events);
     });
 }
+
 
 // Function to add a new event to the database
 function addEvent(event, callback) {
@@ -83,6 +84,16 @@ function unregisterFromEvent(alumniId, eventId, callback) {
     });
 }
 
+// Function to get an event by its ID
+function getById(eventId, callback) {
+    db.findOne({ _id: eventId }, (err, event) => {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, event);
+    });
+}
+
 // Update an event
 function updateEvent(eventId, updatedEventData, callback) {
     db.update({ _id: eventId }, { $set: updatedEventData }, {}, (err, numUpdated) => {
@@ -99,5 +110,7 @@ module.exports = {
     removeEvent,
     getRegisteredEvents,
     registerForEvent,
-    unregisterFromEvent
+    unregisterFromEvent,
+    updateEvent,
+    getById,
 };

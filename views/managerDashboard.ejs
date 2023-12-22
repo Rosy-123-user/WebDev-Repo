@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard | OurEvents</title>
-   <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -24,130 +23,43 @@
                 <a class="nav-link" href="#">Events</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/logout">Sign Out</a>
+                <a class="nav-link" href="/">Sign Out</a>
             </li>
         </ul>
     </nav>
 
     <div class="container mt-4">
-        <!-- Section 2: Manage Events -->
-        <!-- List of managed events -->
-        <ul class="list-group">
-            <% events.forEach(event => { %>
-                <li class="list-group-item">
-                    <h4><%= event.title %></h4>
-                    <p><%= event.description %></p>
-                    <p>Date: <%= event.date %></p>
-                    <p>Category: <%= event.category %></p>
-
-                    <!-- Button to show registered alumni -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#registeredAlumniModal<%= event._id %>">
-                        Show Registered Alumni
-                    </button>
-
-                    <!-- Update Event button -->
-                    <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#updateEventModal<%= event._id %>">
-                        Update
-                    </button>
-
-                    <!-- Delete Event form -->
-                    <form method="POST" action="/deleteEvent/<%= event._id %>">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-
-                    <!-- Modal for Registered Alumni -->
-                    <div class="modal fade" id="registeredAlumniModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="registeredAlumniModalLabel" aria-hidden="true">
-                        <!-- ... (unchanged) -->
-                    </div>
-
-                    <!-- Modal for Update Event -->
-                    <div class="modal fade" id="updateEventModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="updateEventModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="updateEventModalLabel">Update Event</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Update Event Form -->
-                                    <form method="POST" action="/updateEvent/<%= event._id %>">
-                                        <!-- Update Event Form Fields -->
-                                        <!-- Title -->
-                                        <div class="form-group">
-                                            <label for="updateEventTitle">Event Title:</label>
-                                            <input type="text" id="updateEventTitle" name="eventTitle" class="form-control" value="<%= event.title %>" required>
-                                        </div>
-
-                                        <!-- Description -->
-                                        <div class="form-group">
-                                            <label for="updateEventDescription">Event Description:</label>
-                                            <textarea id="updateEventDescription" name="eventDescription" class="form-control" required><%= event.description %></textarea>
-                                        </div>
-
-                                        <!-- Date -->
-                                        <div class="form-group">
-                                            <label for="updateEventDate">Event Date:</label>
-                                            <input type="date" id="updateEventDate" name="eventDate" class="form-control" value="<%= event.date %>" required>
-                                        </div>
-
-                                        <!-- Category -->
-                                        <div class="form-group">
-                                            <label for="updateEventCategory">Event Category:</label>
-                                            <select id="updateEventCategory" name="eventCategory" class="form-control" required>
-                                                <option value="campus" <%= event.category === 'campus' ? 'selected' : '' %>>Campus Events</option>
-                                                <option value="networking" <%= event.category === 'networking' ? 'selected' : '' %>>Networking</option>
-                                                <option value="development" <%= event.category === 'development' ? 'selected' : '' %>>Professional Development</option>
-                                                <!-- Add other categories as needed -->
-                                            </select>
-                                        </div>
-
-                                        <!-- ... (Other Event Form Fields) -->
-
-                                        <button type="submit" class="btn btn-primary">Update Event</button>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </li>
-            <% }); %>
-        </ul>
+        <!-- Section 0: Manager Dashboard Title -->
+        <h1 class="mb-4">Manager Dashboard</h1>   
 
         <!-- Section 1: Create New Event -->
         <h2>Create New Event</h2>
-        <form method="POST" action="/create-event">
+        <form action="/createEvent" method="POST">
             <!-- Title -->
             <div class="form-group">
                 <label for="eventTitle">Event Title:</label>
-                <input type="text" id="eventTitle" name="eventTitle" class="form-control" required>
+                <input type="text" id="title" name="title" class="form-control" required>
             </div>
 
             <!-- Description -->
             <div class="form-group">
                 <label for="eventDescription">Event Description:</label>
-                <textarea id="eventDescription" name="eventDescription" class="form-control" required></textarea>
+                <textarea id="description" name="description" class="form-control" required></textarea>
             </div>
 
             <!-- Date -->
             <div class="form-group">
                 <label for="eventDate">Event Date:</label>
-                <input type="date" id="eventDate" name="eventDate" class="form-control" required>
+                <input type="date" id="date" name="date" class="form-control" required>
             </div>
 
             <!-- Category -->
             <div class="form-group">
                 <label for="eventCategory">Event Category:</label>
-                <select id="eventCategory" name="eventCategory" class="form-control" required>
+                <select id="category" name="category" class="form-control" required>
                     <option value="campus">Campus Events</option>
                     <option value="networking">Networking</option>
                     <option value="development">Professional Development</option>
-                    <!-- Add other categories as needed -->
                 </select>
             </div>
 
@@ -156,34 +68,91 @@
             <button type="submit" class="btn btn-primary">Create Event</button>
         </form>
 
+        <!-- Section 2: Manage Events -->
+        <!-- List of managed events -->
+        <h2 class="mt-4">Manage Events</h2>
+        <div class="row">
+            <% events.forEach((event, index) => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title"><%= event.title %></h4>
+                            <p class="card-text"><%= event.description %></p>
+                            <p class="card-text"><strong>Date:</strong> <%= event.date %></p>
+                            <p class="card-text"><strong>Category:</strong> <%= event.category %></p>
+                            
+                            <!-- Button to show registered alumni -->
+                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#registeredAlumniModal<%= event._id %>">
+                                Show Registered Alumni
+                            </button>
+
+                            <!-- Update Event button -->
+                            <button type="button" class="btn btn-primary btn-sm float-right" onclick="openUpdateForm('<%= event._id %>', '<%= event.title %>', '<%= event.description %>', '<%= event.date %>', '<%= event.category %>')">
+                                Update
+                            </button>
+
+                            <!-- Delete Event form -->
+                            <form method="POST" action="/delete-event/<%= event._id %>" class="d-inline">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+
+                            <!-- Modal for Registered Alumni -->
+                            <div class="modal fade" id="registeredAlumniModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="registeredAlumniModalLabel" aria-hidden="true">
+                                <!-- ... (unchanged) ... -->
+                            </div>
+
+                            <!-- Modal for Update Event -->
+                            <div class="modal fade" id="updateEventModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="updateEventModalLabel" aria-hidden="true">
+                                <!-- ... (unchanged) ... -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% if ((index + 1) % 3 === 0) { %>
+                    <!-- Close and start a new row after every 3 events -->
+                    </div><div class="row">
+                <% } %>
+            <% }); %>
+        </div>
+
         <!-- Section 3: Alumni Students -->
-        <h2>Alumni Students</h2>
+        <h2 class="mt-4">Alumni Students</h2>
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone Number</th>
-                    <th scope="col">Graduation Year</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Table rows with alumni student information -->
-                <!-- Modify the following structure based on your data -->
-                <% userAccount.forEach(student => { %>
-                    <tr>
-                        <td><%= student.name %></td>
-                        <td><%= student.email %></td>
-                        <td><%= student.phone %></td>
-                        <td><%= student.graduationYear %></td>
-                        <td>
-                            <!-- Action buttons (delete, modify) -->
-                            <button type="button" class="btn btn-danger">Delete</button>
-                            <button type="button" class="btn btn-warning">Modify</button>
-                        </td>
-                    </tr>
-                <% }); %>
+                    <% userAccount.forEach(alumni => { %>
+                        <tr>
+                            <td><%= alumni.name %></td>
+                            <td><%= alumni.email %></td>
+                            <td><%= alumni.phone %></td>
+                            <td><%= alumni.role %></td>
+                            <td>
+                                <!-- Update Alumni button -->
+                                <button type="button" class="btn btn-primary btn-sm" onclick="openUpdateAlumniForm('<%= alumni._id %>', '<%= alumni.name %>', '<%= alumni.email %>', '<%= alumni.phone %>', '<%= alumni.role %>')">
+                                    Update
+                                </button>
+        
+                                <!-- Delete Alumni form -->
+                                <form method="POST" action="/delete-alumni/<%= alumni._id %>" class="d-inline">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                    <% if (!userAccount || userAccount.length === 0) { %>
+                        <tr>
+                            <td colspan="5">No alumni records available</td>
+                        </tr>
+                    <% } %>
             </tbody>
         </table>
     </div>
@@ -193,7 +162,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Add this modal at the end of your managerDashboard.ejs -->
+    <!--  modal to update events -->
     <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-labelledby="updateEventModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -217,12 +186,47 @@
         </div>
     </div>
 
+        <!-- Modal for Update Alumni -->
+    <div class="modal fade" id="updateAlumniModal" tabindex="-1" role="dialog" aria-labelledby="updateAlumniModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAlumniModalLabel">Update Alumni</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your existing update alumni form goes here -->
+                    <form method="POST" action="/update-alumni/<%= userAccount[0]._id %>" id="updateAlumniForm">
+                        <!-- Form fields go here -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitUpdateAlumniForm()">Update Alumni</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // JavaScript function to submit the update event form
-        function submitUpdateEventForm() {
-            document.getElementById('updateEventForm').submit();
+        function openUpdateAlumniForm(alumniId, name, email, phoneNumber, graduationYear) {
+            // Set the values in the form
+            document.getElementById('updateAlumniId').value = alumniId;
+            document.getElementById('updateAlumniName').value = name;
+            document.getElementById('updateAlumniEmail').value = email;
+            document.getElementById('updateAlumniPhoneNumber').value = phoneNumber;
+            document.getElementById('updateAlumniGraduationYear').value = graduationYear;
+    
+            // Show the modal
+            $('#updateAlumniModal').modal('show');
+        }
+
+        function submitUpdateAlumniForm() {
+            // Submit the form using JavaScript
+            document.getElementById('updateAlumniForm').submit();
         }
     </script>
-
 </body>
 </html>

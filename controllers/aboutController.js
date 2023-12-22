@@ -13,7 +13,6 @@ let userDb;
 let eventsDb;
 
 // Function to create and load the database
-// Function to create and load the database
 function createAndLoadDatabase(databaseFile) {
     // Check if the database file exists
     if (fs.existsSync(databaseFile)) {
@@ -42,8 +41,7 @@ if (!eventsDb || !userDb) {
     process.exit(1);
 }
 
-// controllers/aboutController.js
-const User = require('../models/alumni.js'); // Import your User model
+
 const nodemailer = require('nodemailer'); // Import nodemailer for sending emails
 
 // Initialize NeDB and create a collection
@@ -90,7 +88,7 @@ const signup = async (req, res) => {
         // Save user data to the NeDB database
         const newUser = {
             username,
-            password: hashedPassword, // Save the hashed password
+            password: hashedPassword,
             email,
             phone,
             category,
@@ -107,14 +105,11 @@ const signup = async (req, res) => {
         } else {
             res.status(400).send('Invalid role specified during signup.');
         }
-
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
 };
-
-
 
 
 const signupForm = (req, res) => {
@@ -196,7 +191,7 @@ const sendContactEmail = async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'email@gmail.com',
+            from: 'your-email@gmail.com',
             to: 'javarosze@gmail.com', // Update with the recipient email
             subject: 'Contact Form Submission',
             text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
@@ -212,6 +207,35 @@ const sendContactEmail = async (req, res) => {
 };
 
 // alumniDashboard controller
+
+const getAllEventsForAlumni = async (alumniId) => {
+    return new Promise((resolve, reject) => {
+        EventModel.find({ attendees: alumniId }, (err, events) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                console.log('Fetched alumni events:', events);
+                resolve(events);
+            }
+        });
+    });
+};
+
+// Fetch events by category
+const getEventsByCategory = async (category) => {
+    return new Promise((resolve, reject) => {
+        EventModel.find({ category }, (err, events) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                console.log(`Fetched events for category "${category}":`, events);
+                resolve(events);
+            }
+        });
+    });
+};
 
 const registerEvent = async (req, res) => {
     try {
@@ -260,25 +284,42 @@ const unregisterEvent = async (req, res) => {
 // managerDashboard
 
 // Fetch all events
-const getAllEvents = async (req, res) => {
+const getAllEvents = async (callback) => {
+    EventModel.find({}, (err, events) => {
+        if (err) {
+            console.error(err);
+            return callback(err, null);
+        }
+        console.log('Fetched events:', events);
+        callback(null, events);
+    });
+};
+
+
+// Create a new event
+const createEvent = async (req, res) => {
+    const { title, description, date, category } = req.body;
+
+    console.log('Received data:', { title, description, date, category });
+
     try {
-        // Fetch events from the NeDB collection
-        EventModel.find({}, (err, events) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Internal Server Error');
-            }
-
-            console.log('Fetched events:', events); // Log events to console for debugging
-
-            // Render the managerDashboard page with events data
-            res.render('managerDashboard', { user: req.user, events });
+        // Use insert to add a new document to the collection
+        const newEvent = await EventModel.insert({
+            title,
+            description,
+            date,
+            category,
         });
+
+        console.log('Created event:', newEvent);
+
+        res.redirect('/managerDashboard');
     } catch (error) {
-        console.error(error);
+        console.error('Error creating event:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 // Delete an event
 const deleteEvent = async (req, res) => {
@@ -310,6 +351,23 @@ const updateEvent = async (req, res) => {
     }
 };
 
+
+// Function to render the update event form
+const renderUpdateForm = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        // Fetch the event details from the database using eventId
+        const event = await EventModel.getById(eventId);
+
+        // Render the managerDashboard.ejs file with the event details
+        res.render('managerDashboard', { events: [event] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
 // Fetch alumni list for a specific event
 const getAlumniList = async (req, res) => {
     const eventId = req.params.eventId;
@@ -330,13 +388,14 @@ const getAlumniList = async (req, res) => {
     }
 };
 
-// Create a new event
-const createEvent = async (req, res) => {
-    const { title, description, date, category } = req.body;
+// Update an alumni
+const updateAlumni = async (req, res) => {
+    const alumniId = req.params.alumniId;
+    const { name, email, phoneNumber, graduationYear } = req.body;
 
     try {
-        // Create a new event in the NeDB collection
-        await EventModel.insert({ title, description, date, category });
+        // Update the alumni in the NeDB collection
+        await AlumniModel.update({ _id: alumniId }, { name, email, phoneNumber, graduationYear });
 
         res.redirect('/managerDashboard');
     } catch (error) {
@@ -344,6 +403,38 @@ const createEvent = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+// Delete an alumni
+const deleteAlumni = async (req, res) => {
+    const alumniId = req.params.alumniId;
+    try {
+        // Remove the alumni from the NeDB collection
+        await AlumniModel.remove({ _id: alumniId });
+
+        res.redirect('/managerDashboard');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+// Render the update alumni form
+const renderUpdateAlumniForm = async (req, res) => {
+    try {
+        const alumniId = req.params.alumniId;
+        // Fetch the alumni details from the database using alumniId
+        const alumni = await AlumniModel.getById(alumniId);
+
+        // Render the managerDashboard.ejs file with the alumni details
+        res.render('managerDashboard', { userAccount: [alumni] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+
 
 module.exports = {
     displayAboutPage,
@@ -353,15 +444,22 @@ module.exports = {
     login,
     loginForm,
     sendContactEmail,
+    
 
+    getAllEventsForAlumni,
+    getEventsByCategory,
     registerEvent,
     getRegisteredEvents,
     unregisterEvent,
 
+
     getAllEvents,
+    createEvent,
     deleteEvent,
     updateEvent,
+    renderUpdateForm,
     getAlumniList,
-    createEvent,
-    // Add other exported controller functions here
+    deleteAlumni,
+    renderUpdateAlumniForm,
+       
 };
