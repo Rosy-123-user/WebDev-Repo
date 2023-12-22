@@ -174,8 +174,29 @@
                 </div>
                 <div class="modal-body">
                     <!-- Your existing update event form goes here -->
-                    <form method="POST" id="updateEventForm">
+                    <form method="POST" id="updateEventForm" action="/update-event/<%= events[0]._id %>">
                         <!-- Form fields go here -->
+                        <input type="hidden" name="_id" id="updateEventId" value="<%= events[0]._id %>">
+                    <div class="form-group">
+                        <label for="updateEventTitle">Event Title:</label>
+                        <input type="text" id="updateEventTitle" name="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEventDescription">Event Description:</label>
+                        <textarea id="updateEventDescription" name="description" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEventDate">Event Date:</label>
+                        <input type="date" id="updateEventDate" name="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEventCategory">Event Category:</label>
+                        <select id="updateEventCategory" name="category" class="form-control" required>
+                            <option value="campus">Campus Events</option>
+                            <option value="networking">Networking</option>
+                            <option value="development">Professional Development</option>
+                        </select>
+                    </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -211,6 +232,24 @@
     </div>
 
     <script>
+            // JavaScript function to open the update event modal and populate the form
+    function openUpdateForm(eventId, title, description, date, category) {
+        // Set the values in the form
+        document.getElementById('updateEventId').value = eventId;
+        document.getElementById('updateEventTitle').value = title;
+        document.getElementById('updateEventDescription').value = description;
+        document.getElementById('updateEventDate').value = date;
+        document.getElementById('updateEventCategory').value = category;
+
+        // Show the modal
+        $('#updateEventModal').modal('show');
+    }
+
+    // JavaScript function to submit the update event form
+    function submitUpdateEventForm() {
+        // Submit the form using JavaScript
+        document.getElementById('updateEventForm').submit();
+    }
         function openUpdateAlumniForm(alumniId, name, email, phoneNumber, graduationYear) {
             // Set the values in the form
             document.getElementById('updateAlumniId').value = alumniId;

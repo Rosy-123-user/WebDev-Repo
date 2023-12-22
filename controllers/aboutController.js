@@ -360,7 +360,7 @@ const renderUpdateForm = async (req, res) => {
         const event = await EventModel.getById(eventId);
 
         // Render the managerDashboard.ejs file with the event details
-        res.render('managerDashboard', { events: [event] });
+        res.render('managerDashboard', { events: [event], updateEventId: eventId });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
