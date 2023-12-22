@@ -12,15 +12,14 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">
-            <img src="path/to/your/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OurEvents Logo">
-            OurEvents
+            <b> OurEvents</b>
         </a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/about">About Us</a>
+                <a class="nav-link" href="/">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Events</a>
+                <a class="nav-link" href="/alumniDashboard">Alumni Dashboard</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/">Sign Out</a>
@@ -63,7 +62,6 @@
                 </select>
             </div>
 
-            <!-- Add other form fields as needed -->
 
             <button type="submit" class="btn btn-primary">Create Event</button>
         </form>
@@ -98,12 +96,12 @@
 
                             <!-- Modal for Registered Alumni -->
                             <div class="modal fade" id="registeredAlumniModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="registeredAlumniModalLabel" aria-hidden="true">
-                                <!-- ... (unchanged) ... -->
+                              
                             </div>
 
                             <!-- Modal for Update Event -->
                             <div class="modal fade" id="updateEventModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="updateEventModalLabel" aria-hidden="true">
-                                <!-- ... (unchanged) ... -->
+                                
                             </div>
                         </div>
                     </div>

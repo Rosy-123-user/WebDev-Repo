@@ -113,7 +113,7 @@ const signup = async (req, res) => {
 
 
 const signupForm = (req, res) => {
-    res.render('signup'); // Update with your signup form template
+    res.render('signup'); 
 };
 
 
@@ -191,8 +191,8 @@ const sendContactEmail = async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'your-email@gmail.com',
-            to: 'javarosze@gmail.com', // Update with the recipient email
+            from: 'your-email@gmail.com',//not yet implemented
+            to: 'r.niyigaba@alustudent.com',
             subject: 'Contact Form Submission',
             text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
         };
